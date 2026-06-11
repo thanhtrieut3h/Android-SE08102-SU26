@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.aimentor.MainActivity;
 import com.example.aimentor.R;
 
 import java.io.FileInputStream;
@@ -63,7 +64,26 @@ public class LoginActivity extends AppCompatActivity {
                         builder.append((char) read);
                     }
                     inputStream.close();// dong file da mo lai
-
+                    String[] infoAccount = null; // mang rong chua thong tin tai khoan
+                    infoAccount = builder.toString().trim().split("\n");
+                    boolean checkLogin = false;
+                    for (int i = 0; i <infoAccount.length; i++){
+                        String user = infoAccount[i].substring(0, infoAccount[i].indexOf("|"));
+                        String pass = infoAccount[i].substring(infoAccount[i].indexOf("|")+1);
+                        if (user.equals(username) && pass.equals(password)){
+                            checkLogin = true;
+                            break;
+                        }
+                    }
+                    if (checkLogin){
+                        // dang nhap thanh cong
+                        Intent intentLogin = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intentLogin);
+                        finish();// khong cho back lai
+                    } else {
+                        // dang nhap that bai - sai thong tin tai khoan
+                        Toast.makeText(LoginActivity.this, "Account Invalid",Toast.LENGTH_SHORT).show();
+                    }
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
                 } catch (IOException e) {
