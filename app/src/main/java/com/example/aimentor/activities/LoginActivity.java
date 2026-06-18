@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                     if (checkLogin){
                         // dang nhap thanh cong
-                        Intent intentLogin = new Intent(LoginActivity.this, MainActivity.class);
+                        Intent intentLogin = new Intent(LoginActivity.this, MenuActivity.class);
                         startActivity(intentLogin);
                         finish();// khong cho back lai
                     } else {

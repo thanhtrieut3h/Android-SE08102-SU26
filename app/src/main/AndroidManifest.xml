@@ -17,6 +17,7 @@
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         <activity android:name=".MainActivity"/>
         <activity android:name=".activities.SignUpActivity"/>
+        <activity android:name=".activities.MenuActivity"/>
         <activity
             android:name=".activities.LoginActivity"
             android:exported="true">
