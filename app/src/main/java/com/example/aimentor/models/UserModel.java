@@ -11,6 +11,7 @@ public class UserModel {
     private String createdAt;
     private String updatedAt;
 
+    /*
     public UserModel(int id, String username, String password, String email, String phone, int role, String createdAt, String updatedAt) {
         this.id = id;
         this.username = username;
@@ -21,6 +22,7 @@ public class UserModel {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+     */
 
     public int getId() {
         return id;

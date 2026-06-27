@@ -1,6 +1,7 @@
 package com.example.aimentor.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.aimentor.MainActivity;
 import com.example.aimentor.R;
+import com.example.aimentor.models.UserModel;
+import com.example.aimentor.repository.UserRepository;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,6 +25,7 @@ import java.io.IOException;
 public class LoginActivity extends AppCompatActivity {
     EditText edtUsername, edtPassword;
     Button btnLogin;
+    UserRepository userRepository;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnSubmit); // tim phan tu ngoai giao dien
         edtUsername = findViewById(R.id.edtUsername);
         edtPassword = findViewById(R.id.edtPassword);
+        userRepository = new UserRepository(LoginActivity.this);
+
         TextView tvSignUp = findViewById(R.id.tvSignUp);
         tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,7 +45,45 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         // bat su kien cho button - khi nguoi dung click vao
-        checkLoginWithFileData();
+        checkLoginUser();
+    }
+    private void checkLoginUser(){
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String username = edtUsername.getText().toString().trim();
+                if (TextUtils.isEmpty(username)){
+                    edtUsername.setError("Username is required");
+                    return;
+                }
+                String password = edtPassword.getText().toString().trim();
+                if (TextUtils.isEmpty(password)){
+                    edtPassword.setError("Password is required");
+                    return;
+                }
+                // xu ly kiem tra xem tai khoan co ton tai trong co so du lieu hay ko?
+                UserModel user = userRepository.loginUser(username, password);
+                assert  user != null;
+                if (user.getId() > 0 && !TextUtils.isEmpty(user.getUsername())){
+                    // dang nhap thanh cong
+                    // luu thong tin tai khoan - de xu ly o nhung man hinh khac
+                    SharedPreferences sharePf = getSharedPreferences("USER_INFO", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharePf.edit();
+                    editor.putInt("ID_USER", user.getId());
+                    editor.putString("USERNAME_USER", user.getUsername());
+                    editor.putString("EMAIL_USER", user.getEmail());
+                    editor.putInt("ROLE_USER", user.getRole());
+                    editor.apply();
+                    // chuyen sang man hinh menu
+                    Intent menu = new Intent(LoginActivity.this, MenuActivity.class);
+                    startActivity(menu);
+                    finish();
+                } else {
+                    // dang nhap that bai
+                    Toast.makeText(LoginActivity.this, "Account invalid", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
     private void checkLoginWithFileData(){
         btnLogin.setOnClickListener(new View.OnClickListener() {

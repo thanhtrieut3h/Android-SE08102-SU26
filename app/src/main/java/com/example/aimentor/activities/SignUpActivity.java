@@ -2,6 +2,7 @@ package com.example.aimentor.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,17 +12,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.aimentor.R;
+import com.example.aimentor.repository.UserRepository;
 
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 
 public class SignUpActivity extends AppCompatActivity {
-    EditText edtUsername, edtPassword;
+    EditText edtUsername, edtPassword, edtEmail, edtPhone;
     Button btnSignup;
     TextView tvLogin;
+    UserRepository userRepository;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +34,10 @@ public class SignUpActivity extends AppCompatActivity {
         edtPassword = findViewById(R.id.edtPassword);
         btnSignup   = findViewById(R.id.btnSubmit);
         tvLogin     = findViewById(R.id.tvLogin);
+        edtEmail    = findViewById(R.id.edtEmail);
+        edtPhone    = findViewById(R.id.edtPhone);
+        userRepository = new UserRepository(SignUpActivity.this);
+
         // vi da co tai khoan roi quay luon ve dang nhap
         // khong muon tao tai khoan moi
         tvLogin.setOnClickListener(new View.OnClickListener() {
@@ -40,6 +48,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
         btnSignup.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
                 String user = edtUsername.getText().toString().trim();
@@ -52,6 +61,24 @@ public class SignUpActivity extends AppCompatActivity {
                     edtPassword.setError("Password is required");
                     return;
                 }
+                String email = edtEmail.getText().toString().trim();
+                if (TextUtils.isEmpty(email)){
+                    edtEmail.setError("Email is required");
+                    return;
+                }
+                String phone = edtPhone.getText().toString().trim();
+                // xu ly luu thong tin tai khoan vao database
+                long insert = userRepository.saveUserAccount(user, pass, email, phone);
+                if (insert == -1){
+                    // insert loi
+                    Toast.makeText(SignUpActivity.this, "Signup Fail", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                // dang ky tai khoan thanh cong
+                Toast.makeText(SignUpActivity.this, "Signup successful", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+                startActivity(intent);
+                /*
                 // xu ly luu tru thong tin nguoi dung vao file
                 FileOutputStream outputStream = null;
                 try {
@@ -70,6 +97,7 @@ public class SignUpActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
+                 */
             }
         });
     }
