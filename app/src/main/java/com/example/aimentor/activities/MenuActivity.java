@@ -1,7 +1,9 @@
 package com.example.aimentor.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -28,6 +30,23 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     Menu menu;
     MenuItem menuItemLogout;
+    SharedPreferences sharedPrf;
+    Intent dataIntent;
+    Bundle dataBundle;
+    private String account = "";
+    private int    userId = 0;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // check user login.
+        if (userId < 0 || TextUtils.isEmpty(account)){
+            Intent checkLogin = new Intent(MenuActivity.this, LoginActivity.class);
+            startActivity(checkLogin);
+            finish();
+        }
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +58,11 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         navigationView = findViewById(R.id.drawerNavigation);
         menu = navigationView.getMenu();
         menuItemLogout = menu.findItem(R.id.logout_menu);
+        dataIntent = getIntent();
+        dataBundle = dataIntent.getExtras();
+        sharedPrf = getSharedPreferences("USER_INFO", MODE_PRIVATE);
+        account = sharedPrf.getString("USERNAME_USER", "");
+        userId  = sharedPrf.getInt("ID_USER", 0);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -53,12 +77,28 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         clickTabNavigation();
         // logout
         Logout();
+        // hien thi thong tin dang nhap
+        MenuItem itemAccount = menu.findItem(R.id.account_menu);
+        if (account != null) {
+            itemAccount.setTitle(account);
+        }
     }
     private void Logout(){
         menuItemLogout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 drawerLayout.closeDrawer(GravityCompat.START); // close
+                // xoa du lieu Bundle
+                if (dataBundle != null){
+                    dataIntent.removeExtra("ID_ACCOUNT");
+                    dataIntent.removeExtra("USER_ACCOUNT");
+                    dataIntent.removeExtra("EMAIL_ACCOUNT");
+                }
+                // xoa du lieu sharePrf
+                SharedPreferences.Editor editor = sharedPrf.edit();
+                editor.clear();
+                editor.apply();
+
                 Intent login = new Intent(MenuActivity.this, LoginActivity.class);
                 startActivity(login);
                 finish();// khong cho back lai

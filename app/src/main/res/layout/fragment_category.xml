@@ -5,15 +5,21 @@
     android:layout_height="match_parent"
     tools:context=".Fragments.CategoryFragment"
     android:orientation="vertical"
-    android:gravity="center">
+    android:padding="10dp">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
+    <Button
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Category page"
-        android:textSize="22sp"
+        android:background="#03A9F4"
+        android:text="Create a new Category"
+        android:textColor="@color/white"
         android:textStyle="bold"
-        />
-
+        android:id="@+id/btnCreateCategory"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="?actionBarSize"
+        android:id="@+id/rvCategory"/>
 </LinearLayout>

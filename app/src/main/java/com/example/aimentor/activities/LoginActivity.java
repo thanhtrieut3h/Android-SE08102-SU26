@@ -76,6 +76,12 @@ public class LoginActivity extends AppCompatActivity {
                     editor.apply();
                     // chuyen sang man hinh menu
                     Intent menu = new Intent(LoginActivity.this, MenuActivity.class);
+                    // gui them du lieu sang man hinh khac
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("ID_ACCOUNT", user.getId());
+                    bundle.putString("USER_ACCOUNT", user.getUsername());
+                    bundle.putString("EMAIL_ACCOUNT", user.getEmail());
+                    menu.putExtras(bundle);
                     startActivity(menu);
                     finish();
                 } else {
