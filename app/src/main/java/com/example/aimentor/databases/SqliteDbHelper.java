@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 
 public class SqliteDbHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "studyAI";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     // dinh nghia thong tin bang "Users" luu tru tai khoan
     protected static final String TABLE_USERS = "users"; // ten bang du lieu
@@ -19,6 +19,13 @@ public class SqliteDbHelper extends SQLiteOpenHelper {
     protected  static final String EMAIL_USER = "email";
     protected static final String PHONE_USER = "phone";
     protected static final String ROLE_USER = "role";
+
+    // dinh nghia thong tin bang Category
+    protected static final String CATEGORY_TABLE = "categories";
+    protected static final String ID_CATEGORY = "id";
+    protected static final String NAME_CATEGORY = "name_category";
+    protected static final String STATUS_CATEGORY = "status_category";
+    protected static final String DESCRIPTION_CATEGORY = "description_category";
 
     // ngay tao du lieu va ngay cap nhat du lieu
     protected static final String CREATED_AT = "createdAt";
@@ -39,13 +46,24 @@ public class SqliteDbHelper extends SQLiteOpenHelper {
                             + ROLE_USER     + " TINYINT DEFAULT(1), "
                             + CREATED_AT    + " DATETIME, "
                             + UPDATED_AT    + " DATETIME ) ";
+
+        String categoryTable = " CREATE TABLE " + CATEGORY_TABLE + " ( "
+                               + ID_CATEGORY + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                               + NAME_CATEGORY + " VARCHAR(100) NOT NULL, "
+                               + DESCRIPTION_CATEGORY + " VARCHAR(200), "
+                               + STATUS_CATEGORY + " TINYINT DEFAULT(1), "
+                               + CREATED_AT    + " DATETIME, "
+                               + UPDATED_AT    + " DATETIME ) ";
+
         db.execSQL(usersTable); // thuc thi cau lenh SQL va tao bang du lieu
+        db.execSQL(categoryTable);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion != newVersion){
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS); // xoa bang
+            db.execSQL("DROP TABLE IF EXISTS " + CATEGORY_TABLE);
             onCreate(db); // tao lai bang du lieu
         }
     }

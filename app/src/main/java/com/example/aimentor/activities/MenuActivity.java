@@ -36,6 +36,17 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
     private String account = "";
     private int    userId = 0;
 
+    private void activeMenu(Intent intent, Bundle bundle){
+        intent = getIntent();
+        bundle = intent.getExtras();
+        if (bundle != null) {
+            String menuName = bundle.getString("MENU_TAB", "").toLowerCase();
+            if (menuName.equals("category")){
+                viewPager.setCurrentItem(1);
+            }
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -45,6 +56,7 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
             startActivity(checkLogin);
             finish();
         }
+        activeMenu(dataIntent, dataBundle);
     }
 
     @Override
