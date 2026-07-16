@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -82,8 +83,11 @@ public class CategoryFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rvCategory);
         categoryArrayList = new ArrayList<>();
         categoryRepository = new CategoryRepository(getActivity());
-
-
+        categoryArrayList  = categoryRepository.getAllCategories();
+        categoryAdapter = new CategoryListAdapter(categoryArrayList, getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(categoryAdapter);
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
